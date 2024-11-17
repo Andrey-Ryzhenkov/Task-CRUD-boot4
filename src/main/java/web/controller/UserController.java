@@ -11,6 +11,8 @@ import web.service.UserService;
 @Controller
 public class UserController {
 
+
+
     private final UserService userService;
 
     @Autowired
@@ -44,7 +46,6 @@ public class UserController {
 
     @PostMapping("/new")
     public String addUser(@ModelAttribute("user") User user) {
-        System.out.println(user.getName());
         userService.addUser(user);
         return "redirect:/users";
     }
