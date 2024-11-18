@@ -18,12 +18,12 @@ public class UserDaoImpl implements UserDao {
     @Transactional
     public void addUser(User user) {
         entityManager.persist(user);
-    }
+    }// Сохраняем нового пользователя
 
     @Override
     public User getUser(Long id) {
         return entityManager.find(User.class, id);
-    }
+    }// Находим пользователя по ID
 
     @Override
     @Transactional
@@ -34,8 +34,9 @@ public class UserDaoImpl implements UserDao {
     @Override
     @Transactional
     public void deleteUser(Long id) {
-        User user = getUser(id);
+        User user = getUser(id); // Ищем пользователя по ID
         if (user != null) {
+            user.getRoles().clear(); // Убираем все роли из пользователя (но не удаляем сами роли)
             entityManager.remove(user);
         }
     }
@@ -43,5 +44,12 @@ public class UserDaoImpl implements UserDao {
     @Override
     public List<User> getAllUsers() {
         return entityManager.createQuery("FROM User", User.class).getResultList();
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return entityManager.createQuery("FROM User WHERE username = :username", User.class)
+                .setParameter("username", username)
+                .getSingleResult(); // Находим пользователя по логину (username)
     }
 }

@@ -1,59 +1,26 @@
 package web.controller;
-
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 import web.model.User;
 import web.service.UserService;
 
 @Controller
 public class UserController {
 
-
-
     private final UserService userService;
 
-    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
-    public String getAllUsers(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        return "allUsers";
-    }
-
-    @GetMapping("/new")
-    public String showAddUserForm(Model model) {
-        model.addAttribute("user", new User());
-        return "addUser";
-    }
-
-    @GetMapping("/edit/{id}")
-    public String showEditUserForm(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userService.getUser(id));
-        return "editUser";
-    }
-
-    @GetMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") Long id) {
-        userService.deleteUser(id);
-        return "redirect:/users";
-    }
-
-    @PostMapping("/new")
-    public String addUser(@ModelAttribute("user") User user) {
-        userService.addUser(user);
-        return "redirect:/users";
-    }
-
-    @PostMapping("/update")
-    public String updateUser(@ModelAttribute("user") User user) {
-        userService.updateUser(user);
-        return "redirect:/users";
+    @GetMapping("/user")
+    public String userPage(Authentication authentication, Model model) {
+        // Получаем текущего авторизованного пользователя по имени (username)
+        User user = userService.getUserByUsername(authentication.getName());
+        model.addAttribute("user", user); // Передаем пользователя в модель
+        return "user/user"; // Страница с информацией о пользователе
     }
 
 }
