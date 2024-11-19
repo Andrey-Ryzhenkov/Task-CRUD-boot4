@@ -22,5 +22,14 @@ public class UserController {
         model.addAttribute("user", user); // Передаем пользователя в модель
         return "user/user"; // Страница с информацией о пользователе
     }
-
+    @GetMapping("/")
+    public String index(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            // Проверяем роли пользователя
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+            return isAdmin ? "redirect:/admin" : "redirect:/user";
+        }
+        return "index"; // Если не авторизован, показываем главную страницу
+    }
 }
