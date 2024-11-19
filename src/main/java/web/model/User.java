@@ -24,10 +24,10 @@ public class User  implements UserDetails {
     @Column(unique = true, nullable = false)
     private String username; // Логин пользователя
 
-    @Column(nullable = false)
+    @Column(name = "firstname", nullable = false)
     private String firstName; // Имя пользователя
 
-    @Column(nullable = false)
+    @Column(name = "lastname", nullable = false)
     private String lastName; // Фамилия пользователя
 
     @Column(unique = true, nullable = false)
@@ -36,7 +36,7 @@ public class User  implements UserDetails {
     @Column(nullable = false)
     private String password; // Пароль пользователя
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

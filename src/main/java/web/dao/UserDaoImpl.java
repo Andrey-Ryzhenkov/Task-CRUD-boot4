@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import web.model.User;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -48,8 +49,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserByUsername(String username) {
-        return entityManager.createQuery("FROM User WHERE username = :username", User.class)
-                .setParameter("username", username)
-                .getSingleResult(); // Находим пользователя по логину (username)
+        try {
+            return entityManager.createQuery("FROM User WHERE username = :username", User.class)
+                    .setParameter("username", username)
+                    .getSingleResult(); // Находим пользователя по логину (username)
+        }catch (NoResultException e) {
+            return null;
+        }
     }
 }

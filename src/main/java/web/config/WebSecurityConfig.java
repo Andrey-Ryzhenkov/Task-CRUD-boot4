@@ -38,10 +38,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     // Разрешаем доступ к статическим ресурсам
                     .antMatchers("/css/**").permitAll()
-                    .antMatchers("/", "/login").permitAll() // Доступ ко всем
+                    .antMatchers("/", "/login").permitAll() // Доступен всем
                     .antMatchers("/admin/**").hasRole("ADMIN") // Админ-доступ
                     .antMatchers("/user/**").hasAnyRole("USER", "ADMIN") // Доступ для USER/ADMIN
+                    .antMatchers("/api/admin/**").hasRole("ADMIN") // Только для ADMIN
+                    .antMatchers("/api/user/**").hasAnyRole("USER", "ADMIN") // Для USER и ADMIN
                     .anyRequest().authenticated() // Остальные запросы требуют аутентификации
+                .and()
+                    .httpBasic() // Используется для API
                 .and()
                 .formLogin()
                     .successHandler(successUserHandler) // Обработчик успешного входа
